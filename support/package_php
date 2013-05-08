@@ -52,6 +52,7 @@ vulcan build -v -s php-$PHP_VERSION -o $tempdir/php-$PHP_VERSION-with-fpm-heroku
                 --enable-gd-native-ttf \
                 --enable-inline-optimization \
                 --with-bz2 \
+                --with-mcrypt \
                 --enable-pcntl \
                 --enable-mbregex \
                 --with-mhash \
