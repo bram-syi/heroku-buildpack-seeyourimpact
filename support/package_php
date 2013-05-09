@@ -32,7 +32,17 @@ pushd $tempdir
 
 # download and extract php
 curl -L http://us.php.net/get/php-$PHP_VERSION.tar.bz2/from/www.php.net/mirror -o php.tgz
-tar xzvf php.tgz
+tar xzf php.tgz
+
+# download and extract mcrypt
+pushd php-$PHP_VERSION/ext
+curl -L http://downloads.sourceforge.net/project/mcrypt/MCrypt/2.6.8/mcrypt-2.6.8.tar.gz -o mcrypt.tgz
+tar xzf mcrypt.tgz
+
+curl ftp://mcrypt.hellug.gr/pub/crypto/mcrypt/libmcrypt/libmcrypt-2.5.7.tar.gz -o libmcrypt-2.5.7.tar.gz
+tar xzvf libmcrypt-2.5.7.tar.gz
+
+popd
 
 # build and package php for heroku
 vulcan build -v -s php-$PHP_VERSION -o $tempdir/php-$PHP_VERSION-with-fpm-heroku.tar.gz -p /app/vendor/php -c \
@@ -51,8 +61,8 @@ vulcan build -v -s php-$PHP_VERSION -o $tempdir/php-$PHP_VERSION-with-fpm-heroku
                 --disable-rpath \
                 --enable-gd-native-ttf \
                 --enable-inline-optimization \
-                --with-bz2 \
-                --with-mcrypt \
+                --with-bz2  \
+                --with-mcrypt=ext/libmcrypt-2.5.3 \
                 --enable-pcntl \
                 --enable-mbregex \
                 --with-mhash \
@@ -69,7 +79,7 @@ vulcan build -v -s php-$PHP_VERSION -o $tempdir/php-$PHP_VERSION-with-fpm-heroku
                 && make install \
                 && /app/vendor/php/bin/pear config-set php_dir /app/vendor/php \
                 && yes '' | /app/vendor/php/bin/pecl install memcache \
-                && yes '' | /app/vendor/php/bin/pecl install apc-3.1.14"
+                && yes '' | /app/vendor/php/bin/pecl install apc-3.1.13"
 
 # upload to s3
 $basedir/aws/s3 put $S3_BUCKET php-$PHP_VERSION-with-fpm-heroku.tar.gz $tempdir/php-$PHP_VERSION-with-fpm-heroku.tar.gz
