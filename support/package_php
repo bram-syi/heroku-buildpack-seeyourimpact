@@ -41,6 +41,8 @@ tar xzf mcrypt.tgz
 
 curl ftp://mcrypt.hellug.gr/pub/crypto/mcrypt/libmcrypt/libmcrypt-2.5.7.tar.gz -o libmcrypt-2.5.7.tar.gz
 tar xzvf libmcrypt-2.5.7.tar.gz
+pushd libmcrypt-2.5.7
+vulcan build -o
 
 popd
 
