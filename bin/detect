@@ -1,8 +1,8 @@
 #!/bin/sh
 # Usage: bin/compile <build-dir>
 
-if [ -f $1/config/public/wp-config.php ]; then
-  echo "Wordpress"
+if [ -f $1/wp-settings.php ]; then
+  echo "Wordpress - See Your Impact"
   exit 0
 else
   exit 1
