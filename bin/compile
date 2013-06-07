@@ -31,8 +31,7 @@ CACHE_DIR=$2
 mkdir -p $BUILD_DIR $CACHE_DIR
 
 cd ${BUILD_DIR}
-mkdir -p public
-mv * public
+mv * -t ./public
 mv public/heroku-config ./config
 
 
