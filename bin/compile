@@ -119,6 +119,7 @@ cat >>bin/start.sh <<EOF
 #!/usr/bin/env bash
 
 echo "Starting nginx"
+cd /app/bin
 ./setup.sh
 (tail -qF -n 0 /app/vendor/nginx/logs/*.log /app/vendor/php/var/log/*.log &)
 php-fpm
