@@ -91,6 +91,7 @@ cat >>bin/setup.sh <<EOF
 
 cp -rf /app/config/* /app
 
+echo "Setting up configuration"
 cp /app/vendor/php/php/fpm/status.html /app/public/status.html
 cp /app/vendor/php/apc.php /app/public/apc.php
 erb /app/vendor/nginx/conf/wordpress.conf.erb > /app/vendor/nginx/conf/wordpress.conf
@@ -118,7 +119,7 @@ cat >>bin/start.sh <<EOF
 #!/usr/bin/env bash
 
 echo "Starting nginx"
-setup.sh
+./setup.sh
 (tail -qF -n 0 /app/vendor/nginx/logs/*.log /app/vendor/php/var/log/*.log &)
 php-fpm
 nginx
