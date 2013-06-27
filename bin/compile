@@ -16,7 +16,6 @@ NGINX_URL="https://s3.amazonaws.com/${S3_BUCKET}/nginx-${NGINX_VERSION}-heroku.t
 PHP_URL="https://s3.amazonaws.com/${S3_BUCKET}/php-${PHP_VERSION}-heroku.tar.gz"
 NGINX_FILE="nginx-${NGINX_VERSION}-heroku.tar.gz"
 PHP_FILE="php-${PHP_VERSION}-heroku.tar.gz"
-EMACS_FILE="static-emacs.tar.gz"
 
 function indent() {
   c='s/^/       /'
@@ -44,26 +43,15 @@ if [ ! -f $NGINX_FILE ]; then
   curl --silent --max-time 60 --location $NGINX_URL -o $NGINX_FILE
 fi
 
-# TODO: cache this
-if [ ! -f $EMACS_FILE ]; then
-  echo "Downloading Emacs 24 pretest from github..."
-  curl -L -s -o $EMACS_FILE https://github.com/downloads/nicferrier/heroku-buildpack-emacs/static-emacs.tar.gz
-  echo "...done"
-fi
-#
-
 if [ ! -f $PHP_FILE ]; then
   echo "-----> Downloading PHP v${PHP_VERSION}"
   curl --silent --max-time 60 --location $PHP_URL -o $PHP_FILE
 fi
 
-#Emacs install
-cd ${BUILD_DIR}
-if [ ! -d ./vendor/emacs ]; then
-  echo "-----> Installing emacs"
-  mkdir -p ./vendor/emacs && cd ./vendor/emacs
-  tar xzf ${CACHE_DIR}/${EMACS_FILE}
-fi
+#!/usr/bin/env bash
+curl https://s3.amazonaws.com/heroku-jvm-buildpack-vi/vim-7.3.tar.gz --output vim.tar.gz
+mkdir vim && tar xzvf vim.tar.gz -C vim
+export PATH=$PATH:/app/vim/bin
 
 # Nginx install
 cd ${BUILD_DIR}
@@ -102,6 +90,17 @@ for var in \`env | cut -f1 -d=\`; do
   echo "env[\$var] = \\$\${var}" >> /app/vendor/php/etc/php-fpm.conf
 done
 
+mkdir /app/vendor/logs
+pushd /app/vendor/logs
+touch dp-heroku.log
+touch facebook-heroku.log
+touch php-heroku.log
+touch syilog-heroku.log
+touch ee-heroku.log
+touch info-heroku.log
+touch txn-heroku.log
+touch mq-heroku.log
+touch unknown-http-env.log
 touch /app/vendor/nginx/logs/access.log /app/vendor/nginx/logs/error.log /app/vendor/php/var/log/php-fpm.log
 EOF
 chmod +x bin/setup.sh
@@ -121,7 +120,7 @@ cat >>bin/start.sh <<EOF
 echo "Starting nginx"
 cd /app/bin
 /app/bin/setup.sh
-(tail -qF -n 0 /app/vendor/nginx/logs/*.log /app/vendor/php/var/log/*.log &)
+(tail -qF -n 0 /app/vendor/nginx/logs/*.log /app/vendor/php/var/log/*.log /app/vendor/logs/*.log &)
 php-fpm
 nginx
 EOF
