@@ -92,15 +92,7 @@ done
 
 mkdir /app/vendor/logs
 pushd /app/vendor/logs
-touch dp-heroku.log
-touch facebook-heroku.log
-touch php-heroku.log
-touch syilog-heroku.log
-touch ee-heroku.log
-touch info-heroku.log
-touch txn-heroku.log
-touch mq-heroku.log
-touch unknown-http-env.log
+touch seeyourimpact.log
 popd
 touch /app/vendor/nginx/logs/access.log /app/vendor/nginx/logs/error.log /app/vendor/php/var/log/php-fpm.log
 EOF
